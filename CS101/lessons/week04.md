@@ -392,3 +392,221 @@ print("\n游戏结束，感谢游玩！")
 ### 拓展阅读
 - [如何避免无限循环](https://realpython.com/python-while-loop/)
 - [Python 循环最佳实践](https://www.geeksforgeeks.org/python-while-loop/)
+
+---
+
+## 实践项目：从循环到游戏开发
+
+### 项目引导
+
+本周我们学习了 **while 循环**、**break** 和 **continue**。在下面的游戏项目中，你会看到这些基础知识如何在实际游戏开发中被大量使用。
+
+**学习目标：**
+- 理解循环在游戏中的应用（游戏循环）
+- 看到 break 在游戏中的实际使用（退出条件）
+- 理解 continue 的作用（跳过某些逻辑）
+- 体验从简单循环到复杂项目的演变
+
+---
+
+### 实践项目 1：猜数字游戏进阶版
+
+**基础知识运用：**
+- ✅ `while True` - 游戏主循环
+- ✅ `break` - 猜对时退出循环
+- ✅ `if-elif-else` - 判断大小
+- ✅ `input()` - 用户输入
+
+**运行：**
+```bash
+python3 /Users/roger/cs/CS101/week04/guess_number.py
+```
+
+**代码中的基础知识：**
+```python
+# while True 创建无限循环
+while True:
+    guess = int(input("请输入你的猜测："))
+    guess_count += 1
+    
+    if guess == secret:        # if 条件判断
+        print("🎉 恭喜你猜对了！")
+        break                   # break 退出循环
+    elif guess < secret:       # elif 多分支
+        print("📈 太小了！")
+    else:                      # else 默认分支
+        print("📉 太大了！")
+```
+
+---
+
+### 实践项目 2：像素勇士 - 横版动作游戏
+
+这是一个完整的游戏项目，使用了本周学习的基础知识，还引入了游戏开发的高级概念。
+
+**运行：**
+```bash
+python3 /Users/roger/cs/CS101/week04/horizontal_game_with_boss.py
+```
+
+#### 🎮 游戏中的循环应用
+
+**1. 游戏主循环（while 循环的终极应用）**
+
+```python
+# Pygame Zero 自动处理的游戏循环
+def update():
+    """这个函数每秒被调用60次，就是一个 while True 循环"""
+    player.update()      # 更新玩家
+    
+    for enemy in enemies:  # for 循环遍历敌人
+        enemy.update()
+    
+    if boss:
+        boss.update()
+```
+
+**基础知识的实际应用：**
+- `while True` → 游戏循环持续运行
+- `for enemy in enemies` → 遍历列表处理每个敌人
+- `if boss:` → 条件判断
+
+---
+
+**2. 敌人巡逻（while 循环 + 边界判断）**
+
+```python
+class Enemy:
+    def update(self):
+        # 巡逻移动
+        self.x += self.direction * self.speed
+        
+        # 到达边界转身（if 判断）
+        if self.x > self.platform_right:
+            self.direction = -1  # 向左走
+        elif self.x < self.platform_left:
+            self.direction = 1   # 向右走
+```
+
+**基础知识的实际应用：**
+- `if-elif` → 判断巡逻边界
+- `while` 循环 → 每次 update() 都在重复执行
+- 变量更新 → `self.x += speed` 就是循环变量更新
+
+---
+
+**3. Boss 多阶段战斗（break 的实际应用）**
+
+```python
+def update(self):
+    # 根据血量切换阶段
+    if self.hp < self.max_hp * 0.3:
+        self.phase = 3
+        self.is_angry = True
+    elif self.hp < self.max_hp * 0.6:
+        self.phase = 2
+    
+    # Boss 死亡检查（break 的变体）
+    if not self.alive:
+        return  # 相当于 continue，跳过后续代码
+```
+
+**基础知识的实际应用：**
+- `if-elif-else` → 多阶段判断
+- `return` → 类似 break，提前退出函数
+- 循环控制 → 控制游戏流程
+
+---
+
+**4. 粒子系统（for 循环 + continue）**
+
+```python
+def update_particles():
+    global particles
+    
+    # 更新所有粒子
+    for p in particles:
+        p.update()
+    
+    # 移除死亡粒子（列表过滤）
+    particles = [p for p in particles if p.lifetime > 0]
+```
+
+**基础知识的实际应用：**
+- `for p in particles` → 遍历粒子列表
+- `if p.lifetime > 0` → 条件过滤
+- 列表推导式 → for + if 的组合应用
+
+---
+
+**5. 平台碰撞检测（循环 + 多重条件）**
+
+```python
+# 玩家平台碰撞
+for plat in platforms:
+    plat_x, plat_y, plat_w, plat_h = plat
+    
+    # 多重条件判断（and 运算符）
+    if (self.x + self.width > plat_x and 
+        self.x < plat_x + plat_w and
+        self.y + self.height >= plat_y and 
+        self.velocity_y >= 0):
+        
+        self.y = plat_y - self.height
+        self.velocity_y = 0
+        self.on_ground = True
+        break  # 找到一个平台就够了，退出循环
+```
+
+**基础知识的实际应用：**
+- `for` 循环 → 遍历所有平台
+- `and` 运算符 → 多个条件同时满足
+- `break` → 找到后退出循环（优化性能）
+
+---
+
+### 知识映射表
+
+| 基础知识 | 在游戏中的实际应用 | 代码位置 |
+|---------|-------------------|----------|
+| `while True` | 游戏主循环 | `update()` 函数 |
+| `break` | 找到平台后退出、Boss死亡 | 碰撞检测、Boss更新 |
+| `if-elif-else` | Boss阶段切换、武器选择 | Boss类、玩家类 |
+| `for` 循环 | 遍历敌人、粒子、平台 | 多处 |
+| `and/or` | 碰撞检测、条件判断 | 碰撞系统 |
+| 变量更新 | 位置移动、血量变化 | 所有 `update()` |
+| 比较运算符 | 边界判断、血量检查 | 多处 |
+
+---
+
+### 学习反思
+
+通过这个游戏项目，你可以看到：
+
+1. **循环无处不在** - 游戏本质上就是一个巨大的循环
+2. **条件判断是核心** - 每个游戏逻辑都需要判断
+3. **break 和 continue 很重要** - 控制流程的关键工具
+4. **基础知识是基石** - 即使是最复杂的游戏，也是由这些简单概念组成
+
+**思考题：**
+- 游戏循环和你学的 `while True` 有什么相似之处？
+- 敌人巡逻的逻辑中，哪里用到了循环变量的更新？
+- Boss 的阶段切换，用了哪种条件语句？
+
+---
+
+### 下周预告
+
+下周我们将学习：
+- **函数（Functions）** - 组织代码的利器
+- **模块化编程** - 把代码分成小块
+- 继续完善游戏，添加更多功能
+
+**提前思考：**
+- 游戏里的 `update()` 和 `draw()` 是什么？（答案：函数！）
+- 如果把所有代码写在一起会怎样？
+- 如何组织代码让它更容易维护？
+
+---
+
+*"循环让计算机重复劳动，条件让程序智能决策。这就是编程的核心力量。"*
