@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="Texture2D" path="res://assets/sprites/demo待机.png" id="2_idle"]
+[ext_resource type="Texture2D" path="res://assets/sprites/demo移动.png" id="3_run"]
+[ext_resource type="Texture2D" path="res://assets/sprites/demo跳跃.png" id="4_jump"]
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1_player")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(32, 32)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_1")
+animation_speed_scale = 1.0
+autoplay = "idle"
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"idle",
+"speed": 8.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"run",
+"speed": 10.0
+}, {
+"frames": [],
+"loop": false,
+"name": &"jump",
+"speed": 15.0
+}]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(32, 32)
+
+[node name="Shape" type="RectangleShape2D" parent="CollisionShape2D"]
+size = Vector2(40, 56)
