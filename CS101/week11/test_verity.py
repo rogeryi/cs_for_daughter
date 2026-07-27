@@ -1,6 +1,11 @@
 import unittest
 
-from verity import STATE_NORMAL, Verity
+from verity import (
+    STATE_MONSTER,
+    STATE_NORMAL,
+    STATE_RECOVERING,
+    Verity,
+)
 
 
 class VerityBasicsTests(unittest.TestCase):
@@ -105,6 +110,91 @@ class VerityBasicsTests(unittest.TestCase):
         self.assertEqual(0, verity.cleanliness)
         self.assertEqual(100, verity.energy)
         self.assertEqual(100, verity.bond)
+
+
+class VerityStateMachineTests(unittest.TestCase):
+    def make_monster(self):
+        verity = Verity("Verity")
+        verity.leave_temporarily()
+        verity.leave_temporarily()
+        verity.leave_temporarily()
+        return verity
+
+    def test_zero_mood_turns_verity_into_monster(self):
+        verity = self.make_monster()
+
+        self.assertEqual(0, verity.mood)
+        self.assertEqual(STATE_MONSTER, verity.state)
+        self.assertEqual("你真的还在乎我吗？", verity.message)
+
+    def test_monster_rejects_daily_actions_without_changes(self):
+        verity = self.make_monster()
+        before = (
+            verity.mood,
+            verity.fullness,
+            verity.cleanliness,
+            verity.energy,
+            verity.bond,
+            verity.outfit,
+        )
+
+        self.assertFalse(verity.feed())
+
+        after = (
+            verity.mood,
+            verity.fullness,
+            verity.cleanliness,
+            verity.energy,
+            verity.bond,
+            verity.outfit,
+        )
+        self.assertEqual(before, after)
+
+    def test_apology_starts_recovery(self):
+        verity = self.make_monster()
+
+        self.assertTrue(verity.apologize())
+
+        self.assertEqual(STATE_RECOVERING, verity.state)
+        self.assertEqual(0.0, verity.recovery_elapsed)
+        self.assertEqual(
+            "我听见你的道歉了……再给我们一次机会。",
+            verity.message,
+        )
+
+    def test_showing_weakness_starts_recovery(self):
+        verity = self.make_monster()
+
+        self.assertTrue(verity.show_weakness())
+
+        self.assertEqual(STATE_RECOVERING, verity.state)
+        self.assertEqual(
+            "原来你也会难过……我愿意再相信你。",
+            verity.message,
+        )
+
+    def test_recovery_finishes_after_one_second(self):
+        verity = self.make_monster()
+        verity.apologize()
+
+        self.assertFalse(verity.update_recovery(0.9))
+        self.assertEqual(STATE_RECOVERING, verity.state)
+
+        self.assertTrue(verity.update_recovery(0.11))
+        self.assertEqual(STATE_NORMAL, verity.state)
+        self.assertEqual(30, verity.mood)
+        self.assertEqual(0.0, verity.recovery_elapsed)
+        self.assertEqual(
+            "我回来了，但请再温柔一点。",
+            verity.message,
+        )
+
+    def test_recovery_actions_are_rejected_in_normal_state(self):
+        verity = Verity("Verity")
+
+        self.assertFalse(verity.apologize())
+        self.assertFalse(verity.show_weakness())
+        self.assertFalse(verity.update_recovery(1.0))
 
 
 if __name__ == "__main__":

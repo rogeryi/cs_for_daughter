@@ -114,3 +114,35 @@ class Verity:
         return self._finish_daily_action(
             "你要走了吗……我会在这里等你。"
         )
+
+    def apologize(self):
+        if self.state != STATE_MONSTER:
+            return False
+
+        self.state = STATE_RECOVERING
+        self.recovery_elapsed = 0.0
+        self.message = "我听见你的道歉了……再给我们一次机会。"
+        return True
+
+    def show_weakness(self):
+        if self.state != STATE_MONSTER:
+            return False
+
+        self.state = STATE_RECOVERING
+        self.recovery_elapsed = 0.0
+        self.message = "原来你也会难过……我愿意再相信你。"
+        return True
+
+    def update_recovery(self, dt):
+        if self.state != STATE_RECOVERING:
+            return False
+
+        self.recovery_elapsed += dt
+        if self.recovery_elapsed < 1.0:
+            return False
+
+        self.state = STATE_NORMAL
+        self.mood = 30
+        self.recovery_elapsed = 0.0
+        self.message = "我回来了，但请再温柔一点。"
+        return True
