@@ -281,6 +281,18 @@ my_pet.show_status()
 
 ---
 
+## 运行本周项目
+
+在 PowerShell 中进入 `CS101/week11` 目录后，运行 Verity 养成小游戏：
+
+```powershell
+python -X utf8 -m pgzero verity_game.py
+```
+
+关闭游戏窗口即可结束程序。
+
+---
+
 ## 参考资料
 
 ### 官方文档

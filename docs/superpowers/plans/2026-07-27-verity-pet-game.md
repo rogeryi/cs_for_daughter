@@ -830,7 +830,7 @@ Expected: exit code `0` with no output.
 Run:
 
 ```powershell
-pgzrun verity_game.py
+python -X utf8 -m pgzero verity_game.py
 ```
 
 Expected: a `960 x 640` window titled `Verity 的温馨小屋`, showing five status bars, Verity, a dialogue bubble and six buttons.
@@ -890,7 +890,7 @@ Expected: a Pygame version number and exit code `0`.
 Launch:
 
 ```powershell
-pgzrun verity_game.py
+python -X utf8 -m pgzero verity_game.py
 ```
 
 Confirm:

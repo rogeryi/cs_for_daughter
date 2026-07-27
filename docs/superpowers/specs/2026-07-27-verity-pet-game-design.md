@@ -269,7 +269,7 @@ CS101/week11/
 安装 Pygame Zero 后，在 `CS101/week11` 目录执行：
 
 ```powershell
-pgzrun verity_game.py
+python -X utf8 -m pgzero verity_game.py
 ```
 
 逻辑测试使用 Python 直接执行：

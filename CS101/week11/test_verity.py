@@ -3,6 +3,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import pygame
+from pgzero.screen import Screen
 
 import verity_game
 from verity import (
@@ -204,28 +205,65 @@ class VerityStateMachineTests(unittest.TestCase):
 
 class VerityExpressionRenderTests(unittest.TestCase):
     def test_high_and_low_moods_use_matching_mouth_directions(self):
-        verity_game.screen = SimpleNamespace(surface=pygame.Surface((960, 640)))
+        with patch.object(
+            verity_game,
+            "screen",
+            SimpleNamespace(surface=pygame.Surface((960, 640))),
+            create=True,
+        ), patch.object(
+            verity_game,
+            "verity",
+            Verity("Verity"),
+            create=True,
+        ):
+            high_mood_verity = Verity("Verity")
+            high_mood_verity.mood = 70
+            verity_game.verity = high_mood_verity
+            with patch.object(verity_game, "draw_outfit"), patch.object(
+                verity_game.pygame.draw,
+                "arc",
+            ) as high_mood_arc:
+                verity_game.draw_normal_face((480, 350), verity_game.YELLOW)
 
-        high_mood_verity = Verity("Verity")
-        high_mood_verity.mood = 70
-        verity_game.verity = high_mood_verity
-        with patch.object(verity_game, "draw_outfit"), patch.object(
-            verity_game.pygame.draw,
-            "arc",
-        ) as high_mood_arc:
-            verity_game.draw_normal_face((480, 350), verity_game.YELLOW)
+            low_mood_verity = Verity("Verity")
+            low_mood_verity.mood = 0
+            verity_game.verity = low_mood_verity
+            with patch.object(verity_game, "draw_outfit"), patch.object(
+                verity_game.pygame.draw,
+                "arc",
+            ) as low_mood_arc:
+                verity_game.draw_normal_face((480, 350), verity_game.YELLOW)
 
-        low_mood_verity = Verity("Verity")
-        low_mood_verity.mood = 0
-        verity_game.verity = low_mood_verity
-        with patch.object(verity_game, "draw_outfit"), patch.object(
-            verity_game.pygame.draw,
-            "arc",
-        ) as low_mood_arc:
-            verity_game.draw_normal_face((480, 350), verity_game.YELLOW)
+            self.assertEqual(
+                (3.14, 6.28), high_mood_arc.call_args.args[3:5]
+            )
+            self.assertEqual((0, 3.14), low_mood_arc.call_args.args[3:5])
 
-        self.assertEqual((3.14, 6.28), high_mood_arc.call_args.args[3:5])
-        self.assertEqual((0, 3.14), low_mood_arc.call_args.args[3:5])
+    def test_status_bars_draw_character_name_above_their_labels(self):
+        with patch.object(
+            verity_game,
+            "screen",
+            Screen(pygame.Surface((960, 640))),
+            create=True,
+        ), patch.object(
+            verity_game,
+            "verity",
+            Verity("Verity"),
+            create=True,
+        ):
+            with patch.object(
+                verity_game,
+                "draw_text",
+                wraps=verity_game.draw_text,
+            ) as draw_text:
+                verity_game.draw_status_bars()
+
+            self.assertEqual(
+                ("Verity", (480, 18), 22),
+                draw_text.call_args_list[0].args[:3],
+            )
+            self.assertEqual(("心情 70", (95, 42), 18),
+                             draw_text.call_args_list[1].args[:3])
 
 
 if __name__ == "__main__":

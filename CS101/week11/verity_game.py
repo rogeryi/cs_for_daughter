@@ -74,6 +74,8 @@ def draw_room():
 
 
 def draw_status_bars():
+    draw_text(verity.name, (WIDTH // 2, 18), 22)
+
     stats = (
         ("心情", verity.mood, (239, 97, 122)),
         ("饱食", verity.fullness, (233, 168, 58)),
