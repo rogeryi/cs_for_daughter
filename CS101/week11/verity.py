@@ -51,3 +51,66 @@ class Verity:
         self.energy += 2
         self.bond += 3
         return self._finish_daily_action("谢谢！这份点心刚刚好。")
+
+    def play(self):
+        if not self._can_do_daily_action():
+            return False
+
+        self.mood += 15
+        self.fullness -= 8
+        self.cleanliness -= 5
+        self.energy -= 15
+        self.bond += 10
+        return self._finish_daily_action("再来一次！我还没玩够呢！")
+
+    def bathe(self):
+        if not self._can_do_daily_action():
+            return False
+
+        self.mood += 5
+        self.cleanliness += 30
+        self.energy -= 3
+        self.bond += 6
+        return self._finish_daily_action(
+            "泡泡软绵绵的，我变得亮晶晶啦！"
+        )
+
+    def talk(self):
+        if not self._can_do_daily_action():
+            return False
+
+        self.mood += 10
+        self.energy -= 1
+        self.bond += 12
+        return self._finish_daily_action(
+            "我喜欢听你说话，也喜欢你听我说。"
+        )
+
+    def dress_up(self):
+        if not self._can_do_daily_action():
+            return False
+
+        current_index = OUTFITS.index(self.outfit)
+        next_index = (current_index + 1) % len(OUTFITS)
+        self.outfit = OUTFITS[next_index]
+        self.mood += 12
+        self.energy -= 4
+        self.bond += 8
+
+        messages = {
+            "蝴蝶结": "蝴蝶结适合我吗？",
+            "帽子": "这顶帽子让我像个冒险家！",
+            "眼镜": "戴上眼镜，我看起来很聪明吧？",
+            "无": "今天先做原来的自己。",
+        }
+        return self._finish_daily_action(messages[self.outfit])
+
+    def leave_temporarily(self):
+        if not self._can_do_daily_action():
+            return False
+
+        self.mood -= 25
+        self.bond -= 10
+        return self._finish_daily_action(
+            "你要走了吗……我会在这里等你。"
+        )
