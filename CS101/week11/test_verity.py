@@ -1,5 +1,10 @@
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 
+import pygame
+
+import verity_game
 from verity import (
     STATE_MONSTER,
     STATE_NORMAL,
@@ -195,6 +200,32 @@ class VerityStateMachineTests(unittest.TestCase):
         self.assertFalse(verity.apologize())
         self.assertFalse(verity.show_weakness())
         self.assertFalse(verity.update_recovery(1.0))
+
+
+class VerityExpressionRenderTests(unittest.TestCase):
+    def test_high_and_low_moods_use_matching_mouth_directions(self):
+        verity_game.screen = SimpleNamespace(surface=pygame.Surface((960, 640)))
+
+        high_mood_verity = Verity("Verity")
+        high_mood_verity.mood = 70
+        verity_game.verity = high_mood_verity
+        with patch.object(verity_game, "draw_outfit"), patch.object(
+            verity_game.pygame.draw,
+            "arc",
+        ) as high_mood_arc:
+            verity_game.draw_normal_face((480, 350), verity_game.YELLOW)
+
+        low_mood_verity = Verity("Verity")
+        low_mood_verity.mood = 0
+        verity_game.verity = low_mood_verity
+        with patch.object(verity_game, "draw_outfit"), patch.object(
+            verity_game.pygame.draw,
+            "arc",
+        ) as low_mood_arc:
+            verity_game.draw_normal_face((480, 350), verity_game.YELLOW)
+
+        self.assertEqual((3.14, 6.28), high_mood_arc.call_args.args[3:5])
+        self.assertEqual((0, 3.14), low_mood_arc.call_args.args[3:5])
 
 
 if __name__ == "__main__":

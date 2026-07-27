@@ -129,11 +129,11 @@ def draw_normal_face(center, color):
     pygame.draw.circle(screen.surface, INK, (x + 25, y - 13), 6)
 
     if verity.mood >= 60:
-        pygame.draw.arc(screen.surface, INK, Rect(x - 28, y - 5, 56, 38), 0, 3.14, 4)
+        pygame.draw.arc(screen.surface, INK, Rect(x - 28, y - 5, 56, 38), 3.14, 6.28, 4)
     elif verity.mood >= 30:
         pygame.draw.line(screen.surface, INK, (x - 20, y + 22), (x + 20, y + 22), 4)
     else:
-        pygame.draw.arc(screen.surface, INK, Rect(x - 28, y + 10, 56, 38), 3.14, 6.28, 4)
+        pygame.draw.arc(screen.surface, INK, Rect(x - 28, y + 10, 56, 38), 0, 3.14, 4)
 
     draw_outfit(center)
 
