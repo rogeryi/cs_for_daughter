@@ -17,11 +17,11 @@ TITLE = "恶魔试炼 - 社畜的晋升之路"
 FPS = 60
 
 # ==================== 加载中文字体 ====================
-# macOS 系统字体路径 - 使用黑体不同字重
-# 标题字体：黑体 Medium（加粗效果）
-TITLE_FONT_PATH = "/System/Library/Fonts/STHeiti Medium.ttc"
-# 正文字体：黑体 Light（轻盈效果）
-TEXT_FONT_PATH = "/System/Library/Fonts/STHeiti Light.ttc"
+# Windows 系统字体路径 - 使用微软雅黑
+# 标题字体：微软雅黑 Bold（加粗效果）
+TITLE_FONT_PATH = "C:/Windows/Fonts/msyhbd.ttc"
+# 正文字体：微软雅黑 Regular（轻盈效果）
+TEXT_FONT_PATH = "C:/Windows/Fonts/msyh.ttc"
 
 # 尝试加载字体
 try:
